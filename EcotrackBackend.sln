@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcotrackApi", "EcotrackApi\EcotrackApi.csproj", "{D66032DA-2E26-48C1-AB2D-3D7D874C036A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcotrackApi", "EcotrackApi\EcotrackApi.csproj", "{D66032DA-2E26-48C1-AB2D-3D7D874C036A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcotrackData", "EcotrackData\EcotrackData.csproj", "{A844E713-6C1E-415E-9D7C-ACBA2B8F1713}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcotrackBusiness", "EcotrackBusiness\EcotrackBusiness.csproj", "{0EF73702-AA43-46DD-9E63-BCD98900563D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{D66032DA-2E26-48C1-AB2D-3D7D874C036A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D66032DA-2E26-48C1-AB2D-3D7D874C036A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D66032DA-2E26-48C1-AB2D-3D7D874C036A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A844E713-6C1E-415E-9D7C-ACBA2B8F1713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A844E713-6C1E-415E-9D7C-ACBA2B8F1713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A844E713-6C1E-415E-9D7C-ACBA2B8F1713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A844E713-6C1E-415E-9D7C-ACBA2B8F1713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EF73702-AA43-46DD-9E63-BCD98900563D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EF73702-AA43-46DD-9E63-BCD98900563D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EF73702-AA43-46DD-9E63-BCD98900563D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EF73702-AA43-46DD-9E63-BCD98900563D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
