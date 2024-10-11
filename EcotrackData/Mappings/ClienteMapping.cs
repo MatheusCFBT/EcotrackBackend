@@ -25,6 +25,8 @@ namespace EcotrackData.Mappings
             builder.Property(c => c.Senha)
                 .IsRequired()
                 .HasColumnType("varchar(40)");
+
+            builder.ToTable("Clientes");
         }
     }
 }
