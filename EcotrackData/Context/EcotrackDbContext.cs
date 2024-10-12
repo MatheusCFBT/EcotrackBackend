@@ -1,4 +1,5 @@
 ﻿using EcotrackBusiness.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Ecotrack.Context
 {
-    public class EcotrackDbContext : DbContext
+    public class EcotrackDbContext : IdentityDbContext
     {
         public EcotrackDbContext(DbContextOptions<EcotrackDbContext> options) : base(options)
         {
