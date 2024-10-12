@@ -26,7 +26,7 @@ namespace EcotrackBusiness.Services
         protected void Notificar(string mensagem)
         {
             // propagar o erro ate a camada de apresentacao
-            _notificador.Handle(new Notification(mensagem))
+            _notificador.Handle(new Notification(mensagem));
 
         }
 
