@@ -1,6 +1,8 @@
 using Ecotrack.Context;
 using EcotrackBusiness.Interfaces;
 using EcotrackBusiness.Models;
+using EcotrackBusiness.Notifications;
+using EcotrackBusiness.Services;
 using EcotrackData.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +18,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<EcotrackDbContext>();
 builder.Services.AddScoped<IRepository<Cliente>, Repository<Cliente>>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<INotificador, Notificador>();
+
 
 var app = builder.Build();
 

@@ -1,4 +1,6 @@
+using EcotrackBusiness.Interfaces;
 using EcotrackBusiness.Models;
+using EcotrackBusiness.Notifications;
 using FluentValidation;
 using FluentValidation.Results;
 
@@ -6,6 +8,13 @@ namespace EcotrackBusiness.Services
 {
     public abstract class BaseService
     {
+        private readonly INotificador _notificador;
+
+        protected BaseService(INotificador notificador) 
+        {
+            _notificador = notificador;
+        }
+
         protected void Notificar(ValidationResult validationResult)
         {
             foreach (var error in validationResult.Errors)
@@ -17,6 +26,7 @@ namespace EcotrackBusiness.Services
         protected void Notificar(string mensagem)
         {
             // propagar o erro ate a camada de apresentacao
+            _notificador.Handle(new Notification(mensagem))
 
         }
 
