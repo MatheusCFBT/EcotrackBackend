@@ -4,12 +4,17 @@ using EcotrackBusiness.Models;
 using EcotrackBusiness.Notifications;
 using EcotrackBusiness.Services;
 using EcotrackData.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<EcotrackDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<EcotrackDbContext>();
 
 builder.Services.AddControllers();
 
