@@ -5,6 +5,8 @@ namespace EcotrackApi.ViewModels
 {
     public class RegisterClienteViewModel
     {  
+        [Key]
+        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório!")]
         [StringLength(70, MinimumLength = 2, ErrorMessage = "O campo {0} precisa conter entre {2} e {1} caracteres" )]
