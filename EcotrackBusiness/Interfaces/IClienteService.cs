@@ -4,6 +4,6 @@ namespace EcotrackBusiness.Interfaces
 {
     public interface IClienteService : IDisposable
     {
-        Task Adicionar(Cliente cliente);
+        Task<bool> Adicionar(Cliente cliente);
     }
 }
