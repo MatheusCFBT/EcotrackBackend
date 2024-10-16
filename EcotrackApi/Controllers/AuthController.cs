@@ -11,6 +11,7 @@ using System;
 using AutoMapper;
 using EcotrackBusiness.Interfaces;
 using EcotrackBusiness.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace EcotrackApi.Controllers
 {
@@ -23,19 +24,18 @@ namespace EcotrackApi.Controllers
         private readonly JwtSettings _jwtSettings;
         private readonly IClienteRepository _clienteRepository;
         private readonly IClienteService _clienteService;
-        private readonly IMapper _mapper;
-
+        
         public AuthController(SignInManager<IdentityUser> signInManager,
                                 IClienteRepository clienteRepository,
                                 IClienteService clienteService,
                                 INotificador notificador,
+                                IEmailSender emailSender,
                                 UserManager<IdentityUser> userManager,
                                 IOptions<JwtSettings> jwtSettings,
                                 IMapper mappper) : base(notificador)
         {
             _signInManager = signInManager;
             _userManager = userManager;
-            _mapper = mappper;
             _jwtSettings = jwtSettings.Value;
             _clienteRepository = clienteRepository;
             _clienteService = clienteService;
