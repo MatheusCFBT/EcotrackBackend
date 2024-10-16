@@ -14,5 +14,11 @@ namespace EcotrackData.Repository
             return await ecotrackDb.Clientes.AsNoTracking().Include(c => c.Cpf)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<Cliente> ObterClientePorEMail(Guid id)
+        {
+            return await ecotrackDb.Clientes.AsNoTracking().Include(c => c.Email)
+                .FirstOrDefaultAsync();
+        }
     }
 }

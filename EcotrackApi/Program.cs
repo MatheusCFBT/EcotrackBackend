@@ -18,11 +18,13 @@ builder.Services.AddDbContext<EcotrackDbContext>(options =>
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<EcotrackDbContext>();
+    .AddEntityFrameworkStores<EcotrackDbContext>()
+    .AddDefaultTokenProviders();
+
 
     builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
-                options.SuppressModelStateInvalidFilter = true;
+                options.SuppressModelStateInvalidFilter = false;
             });
 
 // pegando o token e gravando a chave encodada
@@ -72,6 +74,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
