@@ -11,7 +11,7 @@ using System;
 using AutoMapper;
 using EcotrackBusiness.Interfaces;
 using EcotrackBusiness.Models;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EcotrackApi.Controllers
 {
@@ -29,10 +29,8 @@ namespace EcotrackApi.Controllers
                                 IClienteRepository clienteRepository,
                                 IClienteService clienteService,
                                 INotificador notificador,
-                                IEmailSender emailSender,
                                 UserManager<IdentityUser> userManager,
-                                IOptions<JwtSettings> jwtSettings,
-                                IMapper mappper) : base(notificador)
+                                IOptions<JwtSettings> jwtSettings) : base(notificador)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -102,6 +100,16 @@ namespace EcotrackApi.Controllers
 
             // Gera o token JWT e retorna
             return Ok(new { Token = GerarJwt() });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> ObterPorEmail(string email)
+        {
+            var cliente = await _clienteRepository.ObterClientePorEmail(email);
+
+            if(cliente == null) return NotFound();
+
+            return Ok(cliente);
         }
 
         [NonAction]
