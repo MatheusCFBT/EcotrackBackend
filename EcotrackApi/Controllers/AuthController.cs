@@ -11,7 +11,6 @@ using System;
 using AutoMapper;
 using EcotrackBusiness.Interfaces;
 using EcotrackBusiness.Models;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using IEmailSender = EcotrackBusiness.Interfaces.IEmailSender;
 
 namespace EcotrackApi.Controllers
@@ -31,7 +30,6 @@ namespace EcotrackApi.Controllers
                                 IClienteRepository clienteRepository,
                                 IClienteService clienteService,
                                 INotificador notificador,
-                                IEmailSender emailSender,
                                 UserManager<IdentityUser> userManager,
                                 IOptions<JwtSettings> jwtSettings) : base(notificador)
         {
@@ -152,7 +150,6 @@ namespace EcotrackApi.Controllers
 
             return BadRequest(result.Errors);
         }
-
 
         [HttpGet]
         public async Task<ActionResult> ObterPorEmail(string email)
