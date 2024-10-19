@@ -11,7 +11,7 @@ using System;
 using AutoMapper;
 using EcotrackBusiness.Interfaces;
 using EcotrackBusiness.Models;
-using Microsoft.AspNetCore.Authorization;
+using IEmailSender = EcotrackBusiness.Interfaces.IEmailSender;
 
 namespace EcotrackApi.Controllers
 {
@@ -24,6 +24,7 @@ namespace EcotrackApi.Controllers
         private readonly JwtSettings _jwtSettings;
         private readonly IClienteRepository _clienteRepository;
         private readonly IClienteService _clienteService;
+        private readonly IEmailSender _emailsender;
         
         public AuthController(SignInManager<IdentityUser> signInManager,
                                 IClienteRepository clienteRepository,
@@ -37,6 +38,7 @@ namespace EcotrackApi.Controllers
             _jwtSettings = jwtSettings.Value;
             _clienteRepository = clienteRepository;
             _clienteService = clienteService;
+            _emailsender = emailSender;
         }
 
         [HttpPost("register")]
@@ -100,6 +102,53 @@ namespace EcotrackApi.Controllers
 
             // Gera o token JWT e retorna
             return Ok(new { Token = GerarJwt() });
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<ActionResult> EsqueceuSenha(ForgotPasswordViewModel forgotPassword)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var user = await _userManager.FindByEmailAsync(forgotPassword.Email);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+    
+            var response = await _emailsender.EnviarEmail(forgotPassword.Email, token);
+
+            if (!response)
+            {
+                return BadRequest("Erro ao enviar o e-mail de recuperação.");
+            }
+
+            return Ok("Um link para redefinir a senha foi enviado para o e-mail.");
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel ResetPassword)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _userManager.FindByEmailAsync(ResetPassword.Email);
+            if (user == null)
+            {
+                // Não revela se o usuário não existe
+                return BadRequest(new { Message = "Erro ao redefinir a senha." });
+            }
+
+            // Tentar redefinir a senha com o token recebido
+            var result = await _userManager.ResetPasswordAsync(user, ResetPassword.Token, ResetPassword.Senha);
+            if (result.Succeeded)
+            {
+                return Ok(new { Message = "Senha redefinida com sucesso!" });
+            }
+
+            return BadRequest(result.Errors);
         }
 
         [HttpGet]

@@ -90,6 +90,7 @@ builder.Services.AddScoped<EcotrackDbContext>();
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<INotificador, Notificador>();
+builder.Services.AddScoped<IEmailSender, EmailSenderService>();
 
 builder.Services.AddCors(options =>
 {
