@@ -5,16 +5,31 @@ using SendGrid.Helpers.Mail;
 
 namespace EcotrackBusiness.Services
 {
-    public class EmailSenderService : IEmailSender
+    public class EmailSenderService : BaseService, IEmailSender
     {
+        // Faz a instancia do notificador
+        public EmailSenderService(INotificador notificador) : base(notificador)
+        {
+        }
+
         public async Task<bool> EnviarEmail(string email, string token)
         {
+            // Instancia a Key da api para enviar emails
             string apiKey = "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";
+
+            // Faz integracao com a api para enviar para o cliente certo
             var client = new SendGridClient(apiKey);
+
+            // Endereco de email de quem enviara o email 
             var from = new EmailAddress("suporte.ecotrack@gmail.com", "Ecotrack");
+            
+            // Endereco de email de quem recebera o email 
             var to = new EmailAddress(email);
 
+            // Assunto do email
             string subject = "Recuperação de senha - Ecotrack";
+
+            // Mensagem que contem no email
             string plainTextContent = $"Olá,\n\nVocê solicitou a recuperação de sua senha.\n\n" +
                                       $"Por favor, copie o seguinte token para continuar o processo de recuperação:\n\n" +
                                       $"Token: {token}\n\n" +
@@ -23,6 +38,7 @@ namespace EcotrackBusiness.Services
                                       $"Se você não solicitou essa recuperação, por favor ignore este e-mail.\n\n" +
                                       $"Atenciosamente,\nEquipe Ecotrack";
 
+            // Mensagem que contem no email com codigo HTML e CSS para deixar mais elegante
             string htmlContent = $"<p>Olá,</p>" +
                                             $"<p>Você solicitou a recuperação de sua senha.</p>" +
                                             $"<p><strong>Por favor, copie o seguinte token para continuar o processo de recuperação:</strong></p>" +
@@ -32,18 +48,21 @@ namespace EcotrackBusiness.Services
                                             $"<p>Se você não solicitou essa recuperação, por favor ignore este e-mail.</p>" +
                                             $"<p>Atenciosamente,<br>Equipe Ecotrack</p>";
 
-            var sendEmail = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            // Cria o email que será enviado
+            var Email = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
 
-            var response = await client.SendEmailAsync(sendEmail);
+            // Envia o email
+            var EmailSender = await client.SendEmailAsync(Email);
 
-            if (response.IsSuccessStatusCode)
+            // Verifica se o email foi enviado
+            if (EmailSender.IsSuccessStatusCode)
             {
                 return true;
             }
 
-            // Logar a resposta para verificar o erro
-            var errorMessage = await response.Body.ReadAsStringAsync();
-            Console.WriteLine($"Erro ao enviar o e-mail: {errorMessage}");
+            // Obtem o erro e passa para o notificador
+            var errorMessage = await EmailSender.Body.ReadAsStringAsync();
+            Notificar(errorMessage);
 
             return false;        
         }
