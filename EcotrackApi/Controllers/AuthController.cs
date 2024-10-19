@@ -115,26 +115,21 @@ namespace EcotrackApi.Controllers
 
             var user = await _userManager.FindByEmailAsync(forgotPassword.Email);
 
-            if (user == null )
+            if (user == null)
             {
-                // Não revela se o usuário não existe ou se o e-mail não foi confirmado
                 return NotFound();
             }
 
-            // Gerar o token para redefinir a senha
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+    
+            var response = await _emailsender.EnviarEmail(forgotPassword.Email, token);
 
-            // Criar o link de recuperação de senha (ajuste para o frontend usar o link)
-            var resetPasswordUrl = $"{forgotPassword.ClientURI}/reset-password?token={token}&email={user.Email}";
+            if (!response)
+            {
+                return BadRequest("Erro ao enviar o e-mail de recuperação.");
+            }
 
-            // Enviar o e-mail (integrar com o serviço de envio de e-mails)
-            var response = _emailsender.EnviarEmail(forgotPassword.Email);
-            
-            await response;
-
-            if(response.Result != true) return BadRequest();
-
-            return Ok(new { Message = "um link para redefinir a senha será enviado ao e-mail." });
+            return Ok("Um link para redefinir a senha foi enviado para o e-mail.");
         }
 
         [HttpPost("reset-password")]

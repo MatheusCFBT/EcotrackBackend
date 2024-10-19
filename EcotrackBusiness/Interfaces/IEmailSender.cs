@@ -2,6 +2,6 @@ namespace EcotrackBusiness.Interfaces
 {
     public interface IEmailSender
     {
-            Task<bool> EnviarEmail(string email);
+            Task<bool> EnviarEmail(string email, string token);
     }
 }
