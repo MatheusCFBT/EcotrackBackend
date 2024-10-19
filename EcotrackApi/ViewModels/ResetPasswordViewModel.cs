@@ -17,6 +17,6 @@ namespace EcotrackApi.ViewModels
 
     [Required(ErrorMessage = "O campo {0} é obrigatório!")]
     [Compare("Senha", ErrorMessage = "As senhas não conferem.")]
-    public string ConfirmPassword { get; set; }
+    public string ConfirmarSenha { get; set; }
 }
 }
