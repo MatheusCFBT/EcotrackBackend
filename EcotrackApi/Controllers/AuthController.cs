@@ -174,6 +174,7 @@ namespace EcotrackApi.Controllers
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Segredo);
 
+            // Cria o token
             var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
             {
                 Issuer = _jwtSettings.Emissor,
