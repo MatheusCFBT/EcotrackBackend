@@ -25,7 +25,6 @@ namespace EcotrackApi.Controllers
         private readonly JwtSettings _jwtSettings;
         private readonly IClienteRepository _clienteRepository;
         private readonly IClienteService _clienteService;
-
         private readonly IEmailSender _emailsender;
         
         public AuthController(SignInManager<IdentityUser> signInManager,
@@ -34,8 +33,7 @@ namespace EcotrackApi.Controllers
                                 INotificador notificador,
                                 IEmailSender emailSender,
                                 UserManager<IdentityUser> userManager,
-                                IOptions<JwtSettings> jwtSettings,
-                                IMapper mappper) : base(notificador)
+                                IOptions<JwtSettings> jwtSettings) : base(notificador)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -153,6 +151,17 @@ namespace EcotrackApi.Controllers
             }
 
             return BadRequest(result.Errors);
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> ObterPorEmail(string email)
+        {
+            var cliente = await _clienteRepository.ObterClientePorEmail(email);
+
+            if(cliente == null) return NotFound();
+
+            return Ok(cliente);
         }
 
         [NonAction]

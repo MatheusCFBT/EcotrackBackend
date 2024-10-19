@@ -9,16 +9,14 @@ namespace EcotrackData.Repository
     {
         public ClienteRepository(EcotrackDbContext dbContext) : base(dbContext) { }
 
-        public async Task<Cliente> ObterClientePorCpf(Guid id)
+        public async Task<Cliente> ObterClientePorCpf(string cpf)
         {
-            return await ecotrackDb.Clientes.AsNoTracking().Include(c => c.Cpf)
-                .FirstOrDefaultAsync();
+            return await ecotrackDb.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.Cpf == cpf);
         }
 
-        public async Task<Cliente> ObterClientePorEMail(Guid id)
+        public async Task<Cliente> ObterClientePorEmail(string email)
         {
-            return await ecotrackDb.Clientes.AsNoTracking().Include(c => c.Email)
-                .FirstOrDefaultAsync();
+            return await ecotrackDb.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.Email == email);
         }
     }
 }
