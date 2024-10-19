@@ -9,7 +9,7 @@ namespace EcotrackBusiness.Services
     {
         public async Task<bool> EnviarEmail(string email, string token)
         {
-            string apiKey = "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";
+            string apiKey = "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";
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("suporte.ecotrack@gmail.com", "Ecotrack");
             var to = new EmailAddress(email);
