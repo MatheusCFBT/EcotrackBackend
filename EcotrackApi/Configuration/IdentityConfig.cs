@@ -16,6 +16,15 @@ namespace EcotrackApi.Configuration
                 .AddEntityFrameworkStores<EcotrackDbContext>()
                 .AddDefaultTokenProviders();
 
+            builder.Services.Configure<IdentityOptions>(op =>
+            {
+                op.Password.RequireDigit = false;
+                op.Password.RequiredLength = 0; 
+                op.Password.RequireLowercase = false;
+                op.Password.RequireUppercase = false;
+                op.Password.RequireNonAlphanumeric = false;
+            });
+
            // pegando o token e gravando a chave encodada
             var JwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
             builder.Services.Configure<JwtSettings>(JwtSettingsSection);

@@ -23,10 +23,15 @@ namespace EcotrackBusiness.Services
             // Verifica se o cpf do cliente ja esta no cadastrado no Db
             if(_repository.Buscar(c => c.Cpf == cliente.Cpf).Result.Any())
             {
-                Notificar("Já existe um usúario com esse CPF informado");
+                Notificar("Já existe um usúario com o CPF informado");
                 return false;
             }
 
+            if(_repository.Buscar(c => c.Email == cliente.Email).Result.Any())
+            {
+                Notificar("Já existe um usúario com o Email informado");
+                return false;
+            }
             // Adiciona o cliente no Db se passar em todas as validacoes
             await _repository.Adicionar(cliente);
 

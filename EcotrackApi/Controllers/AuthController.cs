@@ -8,17 +8,17 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Options;
 using System;
-using AutoMapper;
 using EcotrackBusiness.Interfaces;
 using EcotrackBusiness.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using IEmailSender = EcotrackBusiness.Interfaces.IEmailSender;
+using Microsoft.AspNetCore.Http;
 
 namespace EcotrackApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class AuthController:  MainController
+    [Route("[controller]")]
+    public class AuthController : MainController
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -46,51 +46,49 @@ namespace EcotrackApi.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Registrar(RegisterClienteViewModel registerCliente)
         {
-            // Verifica se o model é válido
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            // Verifica se as senhas coincidem
+            if (registerCliente.Senha != registerCliente.ConfirmarSenha) return CustomResponse();
 
-        // Verifica se as senhas coincidem
-        if (registerCliente.Senha != registerCliente.ConfirmarSenha)
-            return BadRequest("As senhas não coincidem");
-
-        // Cria um novo IdentityUser
-        var user = new IdentityUser
-        {
-            UserName = registerCliente.Email,
-            Email = registerCliente.Email
-        };
-
-        // Cria o usuário no Identity
-        var result = await _userManager.CreateAsync(user, registerCliente.Senha);
-        if (!result.Succeeded)
-        {
-            // Se houver falha, retorna os erros
-            foreach (var error in result.Errors)
+            // Cria um novo IdentityUser
+            var user = new IdentityUser
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                UserName = registerCliente.Email,
+                Email = registerCliente.Email
+            };
+
+            // Cria o usuário no Identity
+            var result = await _userManager.CreateAsync(user, registerCliente.Senha);
+            if (!result.Succeeded)
+            {
+                // Se houver falha, retorna os erros
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return CustomResponse(ModelState);
             }
-            return BadRequest(ModelState);
-        }
 
-        // Adiciona o cliente ao banco de dados
-        var cliente = new Cliente
-        {
-            Nome = registerCliente.Nome,
-            Email = registerCliente.Email,
-            Cpf = registerCliente.Cpf
-        };
+            // Adiciona o cliente ao banco de dados
+            var cliente = new Cliente
+            {
+                Nome = registerCliente.Nome,
+                Email = registerCliente.Email,
+                Cpf = registerCliente.Cpf
+            };
 
-        await _clienteRepository.Adicionar(cliente);
-        await _clienteRepository.SaveChanges();
+            await _clienteRepository.Adicionar(cliente);
+            await _clienteRepository.SaveChanges();
 
-        // Faz o login automático do usuário
-        await _signInManager.SignInAsync(user, false);
+            // Faz o login automático do usuário
+            await _signInManager.SignInAsync(user, false);
 
-        return Ok(GerarJwt());
+            return Ok(GerarJwt());
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult> Login(LoginClienteViewModel loginCliente)
         {
             var result = await _signInManager.PasswordSignInAsync(loginCliente.Email, loginCliente.Password, false, true);
@@ -107,56 +105,62 @@ namespace EcotrackApi.Controllers
         }
 
         [HttpPost("forgot-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult> EsqueceuSenha(ForgotPasswordViewModel forgotPassword)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             var user = await _userManager.FindByEmailAsync(forgotPassword.Email);
 
             if (user == null)
             {
-                return NotFound();
+                return CustomResponse();
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
     
-            var response = await _emailsender.EnviarEmail(forgotPassword.Email, token);
+            var sendEmail = await _emailsender.EnviarEmail(forgotPassword.Email, token);
 
-            if (!response)
+            if (!sendEmail)
             {
-                return BadRequest("Erro ao enviar o e-mail de recuperação.");
+                return CustomResponse();
             }
 
             return Ok("Um link para redefinir a senha foi enviado para o e-mail.");
         }
 
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel ResetPassword)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary), StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> RestaurarSenha(ResetPasswordViewModel ResetPassword)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
+            // Verifica se o user existe
             var user = await _userManager.FindByEmailAsync(ResetPassword.Email);
             if (user == null)
             {
-                // Não revela se o usuário não existe
-                return BadRequest(new { Message = "Erro ao redefinir a senha." });
+                return NotFound();
             }
 
-            // Tentar redefinir a senha com o token recebido
+            // Tenta redefinir a senha com o token recebido
             var result = await _userManager.ResetPasswordAsync(user, ResetPassword.Token, ResetPassword.Senha);
             if (result.Succeeded)
             {
-                return Ok(new { Message = "Senha redefinida com sucesso!" });
+                return Ok();
             }
 
-            return BadRequest(result.Errors);
+            return CustomResponse(result.Errors);
         }
 
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public async Task<ActionResult> ObterPorEmail(string email)
         {
+            // Verifica se o cliente existe
             var cliente = await _clienteRepository.ObterClientePorEmail(email);
 
             if(cliente == null) return NotFound();
@@ -179,7 +183,8 @@ namespace EcotrackApi.Controllers
             });
 
             var encodedToken = tokenHandler.WriteToken(token);
-    
+
+            // Retorna o Json Web Token
             return encodedToken;
         }
     }
