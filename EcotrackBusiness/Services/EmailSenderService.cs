@@ -16,7 +16,7 @@ namespace EcotrackBusiness.Services
         {
             // Instancia a Key da api para enviar emails
             // use a essa Key para enviar emails: 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
-            string sendGridApiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+            string sendGridApiKey = "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";
 
             // Faz integracao com a api para enviar para o cliente certo
             var client = new SendGridClient(sendGridApiKey);
