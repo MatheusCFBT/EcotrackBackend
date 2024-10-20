@@ -11,19 +11,28 @@ namespace EcotrackBusiness.Services
 
         public ClienteService(IClienteRepository repository, INotificador notificador) : base(notificador)
         {
+            // Adiciona uma instancia da interface Repositorio
             _repository = repository;
         }
 
         public async Task<bool> Adicionar(Cliente cliente)
         {
+            // Faz uma validacao da entidade Cliente
             if(!ExecutarValidacao(new ClienteValidation(), cliente)) return false; 
 
+            // Verifica se o cpf do cliente ja esta no cadastrado no Db
             if(_repository.Buscar(c => c.Cpf == cliente.Cpf).Result.Any())
             {
-                Notificar("Já existe um usúario com esse CPF informado");
+                Notificar("Já existe um usúario com o CPF informado");
                 return false;
             }
 
+            if(_repository.Buscar(c => c.Email == cliente.Email).Result.Any())
+            {
+                Notificar("Já existe um usúario com o Email informado");
+                return false;
+            }
+            // Adiciona o cliente no Db se passar em todas as validacoes
             await _repository.Adicionar(cliente);
 
             return true;
@@ -31,6 +40,7 @@ namespace EcotrackBusiness.Services
 
         public void Dispose()
         {
+            // Libera recursos nao gerenciados quando nao forem mais necessarios
             _repository.Dispose();
         }
     }

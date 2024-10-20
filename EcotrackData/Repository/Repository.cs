@@ -18,27 +18,32 @@ namespace EcotrackData.Repository
             DbSet = ecotrackDbContext.Set<TEntity>();
         }
 
+        // Método para buscar cliente por expressão generica
         public async Task<IEnumerable<TEntity>> Buscar(Expression<Func<TEntity, bool>> predicate)
         {
             return await DbSet.AsNoTracking().Where(predicate).ToListAsync();
         }
 
+        // Método para buscar cliente por Id
         public async Task<TEntity> ObterPorId(Guid id)
         {
             return await DbSet.FindAsync(id);;
         }
 
+        // Adiciona o cliente no banco de dados
         public Task Adicionar(TEntity entity)
         {
             DbSet.Add(entity);
             return SaveChanges(); 
         }
 
+        // Salva as alterações no banco de dados
         public async Task<int> SaveChanges()
         {
             return await ecotrackDb.SaveChangesAsync();
         }
 
+        // Limpa a memoria
         public void Dispose()
         {
             ecotrackDb?.Dispose();

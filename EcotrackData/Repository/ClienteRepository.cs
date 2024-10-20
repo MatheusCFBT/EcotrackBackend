@@ -9,11 +9,13 @@ namespace EcotrackData.Repository
     {
         public ClienteRepository(EcotrackDbContext dbContext) : base(dbContext) { }
 
+        // Busca no banco de dados o cliente pelo cpf
         public async Task<Cliente> ObterClientePorCpf(string cpf)
         {
             return await ecotrackDb.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.Cpf == cpf);
         }
 
+        // Busca no banco de dados o cliente pelo email
         public async Task<Cliente> ObterClientePorEmail(string email)
         {
             return await ecotrackDb.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.Email == email);

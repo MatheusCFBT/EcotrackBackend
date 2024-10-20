@@ -12,11 +12,13 @@ namespace EcotrackBusiness.Services
 
         protected BaseService(INotificador notificador) 
         {
+            // Adiciona uma instancia da interface notificador
             _notificador = notificador;
         }
 
         protected void Notificar(ValidationResult validationResult)
         {
+            // Obtem todos os erros e suas mensagens
             foreach (var error in validationResult.Errors)
             {
                 Notificar(error.ErrorMessage);
@@ -25,7 +27,7 @@ namespace EcotrackBusiness.Services
 
         protected void Notificar(string mensagem)
         {
-            // propagar o erro ate a camada de apresentacao
+            // Propaga o erro ate a camada de apresentacao
             _notificador.Handle(new Notification(mensagem));
 
         }
@@ -34,8 +36,10 @@ namespace EcotrackBusiness.Services
         {
             var validator = validacao.Validate(entidade);
 
-            if(validator.IsValid) return true;
+            // Verifica se a validacao pegou algum erro
+            if(validator.IsValid) return true; // Se nao ha erros o metodo retorna true e nao tem notficacao
 
+            // passa os erros de validator para Notificar
             Notificar(validator);
 
             return false;
