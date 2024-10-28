@@ -27,6 +27,7 @@ namespace EcotrackBusiness.Services
             // Endereco de email de quem recebera o email 
             var to = new EmailAddress(email);
 
+            string resetPasswordUrl = "http://127.0.0.1:5500/redefinição.html";
             // Assunto do email
             string subject = "Recuperação de senha - Ecotrack";
 
@@ -35,7 +36,7 @@ namespace EcotrackBusiness.Services
                                       $"Por favor, copie o seguinte token para continuar o processo de recuperação:\n\n" +
                                       $"Token: {token}\n\n" +
                                       $"Depois, clique no link abaixo para redefinir sua senha:\n" +
-                                      "{resetPasswordUrl}\n\n" +
+                                      $"{resetPasswordUrl}\n\n" +
                                       $"Se você não solicitou essa recuperação, por favor ignore este e-mail.\n\n" +
                                       $"Atenciosamente,\nEquipe Ecotrack";
 
@@ -45,7 +46,7 @@ namespace EcotrackBusiness.Services
                                             $"<p><strong>Por favor, copie o seguinte token para continuar o processo de recuperação:</strong></p>" +
                                             $"<p style=\"color: #2e6da4;\"><strong>Token: {token}</strong></p>" +
                                             $"<p>Depois, clique no link abaixo para redefinir sua senha:</p>" +
-                                            "<p><a href=\"{resetPasswordUrl}\" style=\"background-color: #2e6da4; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;\">Redefinir Senha</a></p>" +
+                                            $"<p><a href=\"{resetPasswordUrl}\" style=\"background-color: #2e6da4; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;\">Redefinir Senha</a></p>" +
                                             $"<p>Se você não solicitou essa recuperação, por favor ignore este e-mail.</p>" +
                                             $"<p>Atenciosamente,<br>Equipe Ecotrack</p>";
 
