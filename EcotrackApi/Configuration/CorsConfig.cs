@@ -6,13 +6,14 @@ namespace EcotrackApi.Configuration
         {
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("Development",
-                    builder => builder.WithOrigins()
-                                    .AllowAnyMethod()
-                                    .AllowAnyHeader()
-                                    .AllowCredentials());
+                options.AddPolicy("Development", builder =>
+                {
+                    builder.WithOrigins("http://127.0.0.1:5500") 
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials(); 
+                });
             });
-
             return builder;
         }
     }
