@@ -15,12 +15,12 @@ namespace EcotrackBusiness.Services
         public async Task<bool> EnviarEmail(string email, string token)
         {
             // Instancia a Key da api para enviar emails
-            // use a essa Key para enviar emails: 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
+            // use a essa Key para enviar emails: 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
 
-            string sendGridApiKey = "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";
+            string sendGridK = "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";
 
             // Faz integracao com a api para enviar para o cliente certo
-            var client = new SendGridClient(sendGridApiKey);
+            var client = new SendGridClient(sendGridK);
 
             // Endereco de email de quem enviara o email 
             var from = new EmailAddress("suporte.ecotrack@gmail.com", "Ecotrack");
