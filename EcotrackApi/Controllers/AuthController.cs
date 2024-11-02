@@ -80,7 +80,7 @@ namespace EcotrackApi.Controllers
             // Faz o login automático do usuário
             await _signInManager.SignInAsync(user, false);
 
-            return Ok(GerarJwt());
+            return Ok(new { Token = GerarJwt() });
         }
 
         [HttpPost("login")]
@@ -89,7 +89,7 @@ namespace EcotrackApi.Controllers
         [ProducesDefaultResponseType]
         public async Task<ActionResult> Login(LoginClienteViewModel loginCliente)
         {
-            var result = await _signInManager.PasswordSignInAsync(loginCliente.Email, loginCliente.Password, false, true);
+            var result = await _signInManager.PasswordSignInAsync(loginCliente.Email, loginCliente.Senha, false, false);
 
             if (!result.Succeeded)
             {
@@ -148,7 +148,7 @@ namespace EcotrackApi.Controllers
                 return Ok();
             }
 
-            return CustomResponse(result.Errors);
+            return BadRequest(result.Errors);
         }
 
         [HttpGet]
