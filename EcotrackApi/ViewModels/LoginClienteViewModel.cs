@@ -11,6 +11,6 @@ namespace EcotrackApi.ViewModels
 
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
         [StringLength(40, MinimumLength = 5, ErrorMessage = "O campo {0} deve conter entre {2} a {1} caracteres.")]
-        public string Password { get; set; }
+        public string Senha { get; set; }
     }
 }

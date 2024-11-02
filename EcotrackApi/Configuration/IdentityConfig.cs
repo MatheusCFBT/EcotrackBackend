@@ -25,6 +25,11 @@ namespace EcotrackApi.Configuration
                 op.Password.RequireNonAlphanumeric = false;
             });
 
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromMinutes(10);
+            });
+
            // pegando o token e gravando a chave encodada
             var JwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
             builder.Services.Configure<JwtSettings>(JwtSettingsSection);
